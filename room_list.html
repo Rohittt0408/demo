@@ -1,0 +1,116 @@
+{% extends 'rooms/base.html' %}
+{# room_list.html — Home page showing all rooms in a table. #}
+
+{% block title %}All Rooms — Hotel Room Management{% endblock %}
+
+{% block content %}
+<h1>🛏 All Rooms</h1>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <p style="color:#4a5568;">
+        Total rooms: <strong>{{ rooms|length }}</strong>
+    </p>
+    <a href="/rooms/add/" class="btn btn-success">➕ Add New Room</a>
+</div>
+
+{% if rooms %}
+<!-- Table showing all Room records from the database -->
+<div class="card" style="padding:0; overflow:hidden;">
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:linear-gradient(135deg,#1a365d,#2b6cb0); color:white;">
+                <th style="padding:14px 16px; text-align:left;">Room No.</th>
+                <th style="padding:14px 16px; text-align:left;">Type</th>
+                <th style="padding:14px 16px; text-align:left;">Price (₹)</th>
+                <th style="padding:14px 16px; text-align:left;">Floor</th>
+                <th style="padding:14px 16px; text-align:left;">Availability</th>
+                <th style="padding:14px 16px; text-align:center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr style="border-bottom:1px solid #e2e8f0;"
+                onmouseover="this.style.background='#ebf8ff'"
+                onmouseout="this.style.background=''">
+
+                <td style="padding:13px 16px; font-weight:600; color:#1a365d;">
+                    {{ room.room_number }}
+                </td>
+
+                <td style="padding:13px 16px;">
+                    {% if room.room_type == 'Suite' %}
+                        <span class="badge badge-suite">Suite</span>
+                    {% elif room.room_type == 'Deluxe' %}
+                        <span class="badge badge-deluxe">Deluxe</span>
+                    {% elif room.room_type == 'Double' %}
+                        <span class="badge badge-double">Double</span>
+                    {% else %}
+                        <span class="badge badge-single">Single</span>
+                    {% endif %}
+                </td>
+
+                <td style="padding:13px 16px; color:#276749; font-weight:600;">
+                    ₹{{ room.price }}
+                </td>
+
+                <td style="padding:13px 16px;">Floor {{ room.floor }}</td>
+
+                <td style="padding:13px 16px;">
+                    {% if room.availability %}
+                        <span style="color:#38a169; font-weight:600;">✔ Available</span>
+                    {% else %}
+                        <span style="color:#e53e3e; font-weight:600;">✘ Occupied</span>
+                    {% endif %}
+                </td>
+
+                <td style="padding:13px 16px; text-align:center;">
+                    <a href="/rooms/edit/{{ room.pk }}/"
+                       class="btn btn-warning"
+                       style="font-size:0.82rem; padding:6px 14px; margin-right:6px;">
+                       ✏ Edit
+                    </a>
+                    <a href="/rooms/delete/{{ room.pk }}/"
+                       class="btn btn-danger"
+                       style="font-size:0.82rem; padding:6px 14px;">
+                       🗑 Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<!-- Shown when no rooms exist in the database -->
+<div class="card" style="text-align:center; padding:60px 20px; color:#718096;">
+    <p style="font-size:3rem; margin-bottom:12px;">🏨</p>
+    <p style="font-size:1.1rem; margin-bottom:20px;">No rooms found. Add your first room!</p>
+    <a href="/rooms/add/" class="btn btn-success">➕ Add Room</a>
+</div>
+{% endif %}
+
+<!-- Quick link to REST API -->
+<div style="margin-top:30px; padding:16px 20px; background:#ebf8ff; border-radius:8px; border-left:4px solid #2b6cb0;">
+    <strong style="color:#1a365d;">🔗 REST API:</strong>
+    <span style="color:#4a5568;">
+        View all rooms as JSON →
+        <a href="/api/rooms/" style="color:#2b6cb0;" target="_blank">/api/rooms/</a>
+    </span>
+</div>
+
+<!-- Badge styles for room types -->
+<style>
+    .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+    .badge-suite  { background: #fefcbf; color: #744210; }
+    .badge-deluxe { background: #e9d8fd; color: #553c9a; }
+    .badge-double { background: #bee3f8; color: #1a365d; }
+    .badge-single { background: #e2e8f0; color: #2d3748; }
+</style>
+{% endblock %}

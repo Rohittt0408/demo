@@ -1,0 +1,49 @@
+{% extends 'rooms/base.html' %}
+<!--
+  room_confirm_delete.html — Shows a confirmation page before deleting a room.
+  This prevents accidental deletions.
+-->
+
+{% block title %}Delete Room {{ room.room_number }} — Hotel Room Management{% endblock %}
+
+{% block content %}
+<h1>🗑 Delete Room</h1>
+
+<div class="card" style="max-width:480px; text-align:center;">
+
+    <!-- Warning icon -->
+    <div style="font-size:3.5rem; margin-bottom:16px;">⚠️</div>
+
+    <h2 style="color:#c53030; margin-bottom:12px;">Are you sure?</h2>
+
+    <p style="color:#4a5568; margin-bottom:6px;">
+        You are about to permanently delete:
+    </p>
+
+    <!-- Room details box -->
+    <div style="background:#fff5f5; border:1px solid #feb2b2; border-radius:8px;
+                padding:16px; margin:16px 0; text-align:left;">
+        <p><strong>Room Number:</strong> {{ room.room_number }}</p>
+        <p><strong>Type:</strong>        {{ room.room_type }}</p>
+        <p><strong>Price:</strong>       ₹{{ room.price }}</p>
+        <p><strong>Floor:</strong>       {{ room.floor }}</p>
+        <p><strong>Status:</strong>
+            {% if room.availability %}Available{% else %}Occupied{% endif %}
+        </p>
+    </div>
+
+    <p style="color:#718096; font-size:0.9rem; margin-bottom:24px;">
+        This action <strong>cannot be undone</strong>.
+    </p>
+
+    <!-- POST form — sends DELETE request when confirmed -->
+    <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" style="margin-right:12px;">
+            🗑 Yes, Delete
+        </button>
+    </form>
+
+    <a href="/" class="btn btn-secondary">✖ Cancel</a>
+</div>
+{% endblock %}
